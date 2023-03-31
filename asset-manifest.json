@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/react-gh-pages/static/css/main.0c8db1b4.css",
-    "main.js": "/react-gh-pages/static/js/main.73951482.js",
-    "static/media/Inter-Medium.woff?v=3.19": "/react-gh-pages/static/media/Inter-Medium.9053572c46aeb4b16caa.woff",
-    "static/media/Inter-Black.woff?v=3.19": "/react-gh-pages/static/media/Inter-Black.c6938660eec019fefd68.woff",
-    "static/media/Inter-Regular.woff?v=3.19": "/react-gh-pages/static/media/Inter-Regular.8c206db99195777c6769.woff",
-    "static/media/Inter-Medium.woff2?v=3.19": "/react-gh-pages/static/media/Inter-Medium.293fd13dbca5a3e450ef.woff2",
-    "static/media/Inter-Black.woff2?v=3.19": "/react-gh-pages/static/media/Inter-Black.15ca31c0a2a68f76d2d1.woff2",
-    "static/media/Inter-Regular.woff2?v=3.19": "/react-gh-pages/static/media/Inter-Regular.c8ba52b05a9ef10f4758.woff2",
-    "static/media/header-logo.svg": "/react-gh-pages/static/media/header-logo.03b78ada3425e9132ff3db7ea8f4a6f6.svg",
-    "static/media/card-item-like-button.svg": "/react-gh-pages/static/media/card-item-like-button.40ae1e996fc63a6376ca.svg",
-    "static/media/card-delete-button.svg": "/react-gh-pages/static/media/card-delete-button.823b0cf1b0b7e9cb7cad.svg",
-    "index.html": "/react-gh-pages/index.html",
-    "static/media/card-item-like-button-active.svg": "/react-gh-pages/static/media/card-item-like-button-active.fe17a515669479b1e649.svg",
-    "static/media/profile-edit-button.svg": "/react-gh-pages/static/media/profile-edit-button.8667ac4a523e8fc42e59.svg",
-    "static/media/popup-close-button.svg": "/react-gh-pages/static/media/popup-close-button.2ceb783afbab75916ddc.svg",
-    "static/media/profile-add-button.svg": "/react-gh-pages/static/media/profile-add-button.d86bb2edc2f6eadb96b7.svg",
-    "main.0c8db1b4.css.map": "/react-gh-pages/static/css/main.0c8db1b4.css.map",
-    "main.73951482.js.map": "/react-gh-pages/static/js/main.73951482.js.map"
+    "main.css": "/mesto-react/static/css/main.a36d7b28.css",
+    "main.js": "/mesto-react/static/js/main.40a4494d.js",
+    "static/media/Inter-Medium.woff?v=3.19": "/mesto-react/static/media/Inter-Medium.9053572c46aeb4b16caa.woff",
+    "static/media/Inter-Black.woff?v=3.19": "/mesto-react/static/media/Inter-Black.c6938660eec019fefd68.woff",
+    "static/media/Inter-Regular.woff?v=3.19": "/mesto-react/static/media/Inter-Regular.8c206db99195777c6769.woff",
+    "static/media/Inter-Medium.woff2?v=3.19": "/mesto-react/static/media/Inter-Medium.293fd13dbca5a3e450ef.woff2",
+    "static/media/Inter-Black.woff2?v=3.19": "/mesto-react/static/media/Inter-Black.15ca31c0a2a68f76d2d1.woff2",
+    "static/media/Inter-Regular.woff2?v=3.19": "/mesto-react/static/media/Inter-Regular.c8ba52b05a9ef10f4758.woff2",
+    "static/media/header-logo.svg": "/mesto-react/static/media/header-logo.03b78ada3425e9132ff3db7ea8f4a6f6.svg",
+    "static/media/card-item-like-button.svg": "/mesto-react/static/media/card-item-like-button.40ae1e996fc63a6376ca.svg",
+    "static/media/card-delete-button.svg": "/mesto-react/static/media/card-delete-button.823b0cf1b0b7e9cb7cad.svg",
+    "index.html": "/mesto-react/index.html",
+    "static/media/card-item-like-button-active.svg": "/mesto-react/static/media/card-item-like-button-active.fe17a515669479b1e649.svg",
+    "static/media/profile-edit-button.svg": "/mesto-react/static/media/profile-edit-button.8667ac4a523e8fc42e59.svg",
+    "static/media/popup-close-button.svg": "/mesto-react/static/media/popup-close-button.2ceb783afbab75916ddc.svg",
+    "static/media/profile-add-button.svg": "/mesto-react/static/media/profile-add-button.d86bb2edc2f6eadb96b7.svg",
+    "main.a36d7b28.css.map": "/mesto-react/static/css/main.a36d7b28.css.map",
+    "main.40a4494d.js.map": "/mesto-react/static/js/main.40a4494d.js.map"
   },
   "entrypoints": [
-    "static/css/main.0c8db1b4.css",
-    "static/js/main.73951482.js"
+    "static/css/main.a36d7b28.css",
+    "static/js/main.40a4494d.js"
   ]
 }
