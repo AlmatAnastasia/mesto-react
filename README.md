@@ -23,7 +23,6 @@
 <div id="demo"></div>
 <h2>Демонстрация</h2>
 <h3>Ссылка на сайт <a href="https://almatanastasia.github.io/mesto-react/">тут</a> !</h3>
-<img src="./src/images/Demo_index.png" alt="Демо страницы index.html" width="900">
 
 <div id="file_structure"></div>
 <h2>Файловая структура</h2>
