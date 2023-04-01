@@ -4,7 +4,7 @@
 @import url("./vendor/normalize.css");
 
 /* подключаем шрифты - fonts.css */
-@import url("./fonts/fonts.css");
+@import url("./vendor/fonts/fonts.css");
 
 /* подключаем стили блока root */
 @import url("./blocks/root/root.css");
