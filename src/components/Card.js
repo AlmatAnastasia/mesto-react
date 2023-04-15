@@ -1,6 +1,21 @@
-export default function Card({ card, onCardClick }) {
+import { useContext } from "react";
+import CurrentUserContext from "../contexts/CurrentUserContext";
+export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
+  const { id } = useContext(CurrentUserContext);
+  const isOwn = card.owner._id === id;
+  const isLiked = card.likes.some((i) => i._id === id);
+  const cardLikeButtonClassName = `card__item-like-button indicator ${
+    isLiked && "card__item-like-button_active"
+  }`;
+
   function handleClick() {
     onCardClick(card);
+  }
+  function handleLikeClick() {
+    onCardLike(card);
+  }
+  function handleDeleteClick() {
+    onCardDelete(card);
   }
   return (
     <li className="card">
@@ -17,7 +32,8 @@ export default function Card({ card, onCardClick }) {
             type="button"
             name="like-button"
             aria-label='Кнопка "Лайк"'
-            className="card__item-like-button indicator"
+            className={cardLikeButtonClassName}
+            onClick={handleLikeClick}
           ></button>
           <label
             type="text"
@@ -28,12 +44,15 @@ export default function Card({ card, onCardClick }) {
           </label>
         </div>
       </div>
-      <button
-        type="button"
-        name="delete-button"
-        aria-label='Кнопка "Удалить"'
-        className="card__delete-button indicator"
-      ></button>
+      {isOwn && (
+        <button
+          type="button"
+          name="delete-button"
+          aria-label='Кнопка "Удалить"'
+          className="card__delete-button indicator"
+          onClick={handleDeleteClick}
+        ></button>
+      )}
     </li>
   );
 }
