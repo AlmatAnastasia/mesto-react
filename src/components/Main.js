@@ -1,29 +1,18 @@
-import { useEffect, useState } from "react";
-import Card from "./Card.js";
-import api from "../utils/api.js";
+import { useContext } from "react";
+import Card from "./Card";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 export default function Main({
   onEditPopup,
   onNewCardPopup,
   onUpdateAvatarPopup,
   onCardClick,
-  userName,
-  userDescription,
-  userAvatar,
+  onCardLike,
+  onCardDelete,
+  cards,
 }) {
-  const [cards, setCards] = useState([]);
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((error) => {
-        // обработать ошибки
-        console.log(`${error}. Запрос не выполнен!`); // вывести ошибку в консоль
-      });
-  }, []);
-
+  // подписка на контекст CurrentUserContext
+  const { id, name, about, avatar } = useContext(CurrentUserContext);
   return (
     <main className="main">
       {/* Блок 2 profile */}
@@ -37,12 +26,12 @@ export default function Main({
         >
           <img
             className="profile__avatar"
-            src={`${userAvatar}`}
+            src={`${avatar}`}
             alt='Изображение "Аватар профиля"'
           />
         </button>
         <div className="profile__intro">
-          <h1 className="profile__intro-title much-text">{userName}</h1>
+          <h1 className="profile__intro-title much-text">{name}</h1>
           <button
             type="button"
             name="edit-button"
@@ -50,7 +39,7 @@ export default function Main({
             className="profile__intro-edit-button indicator"
             onClick={onEditPopup}
           ></button>
-          <p className="profile__intro-text much-text">{userDescription}</p>
+          <p className="profile__intro-text much-text">{about}</p>
         </div>
         <button
           type="button"
@@ -65,7 +54,13 @@ export default function Main({
       <section className="cards">
         <ul className="cards__list list">
           {cards.map((card, i) => (
-            <Card key={card._id} card={card} onCardClick={onCardClick} />
+            <Card
+              key={card._id}
+              card={card}
+              onCardClick={onCardClick}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
+            />
           ))}
         </ul>
       </section>

@@ -107,8 +107,7 @@ class Api {
       headers: this._returnHeadersData(),
       body: JSON.stringify({
         name: name,
-        link,
-        link,
+        link: link,
       }),
     }).then((res) => {
       // обработать результаты
