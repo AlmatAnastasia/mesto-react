@@ -82,22 +82,6 @@ function App() {
         inputValidity: false,
         errorMessage: false,
       });
-      let secondInput = undefined;
-      switch (setState) {
-        case setValidityPopupNewCardInputName:
-          secondInput = setValidityPopupNewCardInputDescription;
-          break;
-        case setValidityPopupNewCardInputDescription:
-          secondInput = setValidityPopupNewCardInputName;
-          break;
-        default:
-          return;
-      }
-      secondInput({
-        inputValue: "",
-        inputValidity: false,
-        errorMessage: false,
-      });
     };
   }
   function handleInputChange(setState) {
@@ -147,6 +131,7 @@ function App() {
   // удалить карточку
   function handleCardDelete(card) {
     setIsDeletePopupOpen(!isDeletePopupOpen);
+    setIsButtonActive(true);
     if (isDeletePopupOpen) {
       setRenderLoadingDelete("Удаление...");
     }
