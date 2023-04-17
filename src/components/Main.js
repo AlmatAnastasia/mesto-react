@@ -16,7 +16,7 @@ export default function Main({
   return (
     <main className="main">
       {/* Блок 2 profile */}
-      <section className="profile">
+      <section className="profile" id={id}>
         <button
           type="button"
           name="edit-button"

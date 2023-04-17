@@ -1,3 +1,4 @@
+import usePopupClose from "../hooks/usePopupClose";
 export default function PopupWithForm({
   name,
   title,
@@ -5,15 +6,12 @@ export default function PopupWithForm({
   isOpen,
   onClose,
   onSubmit,
-  inputValidity,
-  isButtonActive,
+  isValid,
   children,
 }) {
   const popupClassList = `popup popup_type_${name} ${isOpen && "popup_opened"}`;
-  const checkingAllInputs = inputValidity.every(
-    (validity) => validity === true
-  );
-  const conditionForButton = checkingAllInputs && isButtonActive;
+  // закрыть попап при нажатии на overlay или клавишей Esc
+  usePopupClose(isOpen, onClose);
   return (
     <div className={popupClassList}>
       <div className="popup__container">
@@ -29,12 +27,12 @@ export default function PopupWithForm({
             type="submit"
             name="submit"
             aria-label={`Кнопка отправки формы &quot;${textButton}&quot;`}
-            // className="popup__submit indicator"
             className={`popup__submit ${
-              conditionForButton
+              isValid
                 ? "indicator"
                 : "popup__submit_disabled indicator_disabled"
             }`}
+            disabled={isValid ? false : true}
           >
             {textButton}
           </button>
@@ -45,7 +43,7 @@ export default function PopupWithForm({
           aria-label='Кнопка "Закрыть"'
           className="popup__close-button indicator"
           onClick={onClose}
-        ></button>
+        />
       </div>
     </div>
   );

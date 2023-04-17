@@ -1,28 +1,32 @@
+import { useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
+import { inputDescriptionUrl as inputName } from "../utils/utils.js";
+import { conditionForClassList, inputDescriptionUrl } from "../utils/utils.js";
 export default function EditAvatarPopup({
   textButton,
   isOpen,
   onClose,
   onUpdateAvatar,
-  // реф avatarRef
-  avatarRef,
-  // валидация
-  setState,
-  validity,
-  handleFocus,
-  handleInputChange,
-  isButtonActive,
 }) {
-  function handleSubmit(evt) {
-    evt.preventDefault();
+  // валидация
+  const { values, handleChange, errors, isValid, setValues, resetForm } =
+    useFormAndValidation();
+  // наличие текста ошибки для каждого из полей
+  const conditionForClassListDescription = conditionForClassList(
+    errors[inputDescriptionUrl]
+  );
+  // очистка полей при монтировании
+  useEffect(() => {
+    resetForm();
+    setValues({});
+  }, [resetForm, setValues, isOpen]);
+  // обработка отправки формы
+  function handleSubmit(e) {
+    e.preventDefault();
+    // передать значения управляемых компонентов во внешний обработчик
     onUpdateAvatar({
-      avatar: avatarRef.current.value,
-    });
-    avatarRef.current.value = "";
-    setState({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
+      avatar: values[inputName],
     });
   }
   return (
@@ -33,8 +37,7 @@ export default function EditAvatarPopup({
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      inputValidity={[validity.inputValidity]}
-      isButtonActive={isButtonActive}
+      isValid={isValid}
     >
       <fieldset className="popup__info">
         <div className="popup__cell">
@@ -43,21 +46,19 @@ export default function EditAvatarPopup({
             id="popup-update-avatar-description-url"
             name="popup__input_type_description-url"
             className={`popup__input popup__input_type_description-url ${
-              !validity.inputValidity && "popup__input_type_error"
+              conditionForClassListDescription && "popup__input_type_error"
             }`}
             placeholder="Ссылка на новое изображение аватара"
-            ref={avatarRef}
-            value={validity.inputValue}
-            onFocus={handleFocus(setState)}
-            onChange={handleInputChange(setState)}
+            value={values[inputName] || ""}
+            onChange={handleChange}
             required
           />
           <span
             className={`popup-update-avatar-description-url-error ${
-              !validity.inputValidity && "popup__input-error"
+              conditionForClassListDescription && "popup__input-error"
             }`}
           >
-            {validity.errorMessage}
+            {errors[inputName]}
           </span>
         </div>
       </fieldset>

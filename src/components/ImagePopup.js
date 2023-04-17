@@ -13,7 +13,7 @@ export default function ImagePopup({ name, isOpen, onClose, heading, link }) {
           aria-label='Кнопка "Закрыть"'
           className="popup__close-button indicator"
           onClick={onClose}
-        ></button>
+        />
       </div>
     </div>
   );

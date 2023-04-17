@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -11,10 +11,6 @@ import api from "../utils/api";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function App() {
-  // рефы
-  const nameRef = useRef("");
-  const linkRef = useRef("");
-  const avatarRef = useRef("");
   // переменные состояния
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isNewCardPopupOpen, setIsNewCardPopupOpen] = useState(false);
@@ -24,10 +20,7 @@ function App() {
     link: "",
     heading: "",
   });
-  const [renderLoadingDelete, setRenderLoadingDelete] = useState("Да");
   const [cardDelete, setcardDelete] = useState([]);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [currentUser, setCurrentUser] = useState({
     id: "",
     name: "",
@@ -37,77 +30,7 @@ function App() {
   });
   const [cards, setCards] = useState([]);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
-  const [renderLoadingEdit, setRenderLoadingEdit] = useState("Сохранить");
-  const [renderLoading, setRenderLoading] = useState("Создать");
-  // переменные состояния (валидация)
-  const [validityPopupEditInputName, setValidityPopupEditInputName] = useState({
-    inputValue: "", // значение поля
-    inputValidity: true, // валидность поля
-    errorMessage: false, // текст ошибки
-  });
-  const [
-    validityPopupEditInputDescription,
-    setValidityPopupEditInputDescription,
-  ] = useState({
-    inputValue: "",
-    inputValidity: true,
-    errorMessage: false,
-  });
-  const [validityPopupNewCardInputName, setValidityPopupNewCardInputName] =
-    useState({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
-    });
-  const [
-    validityPopupNewCardInputDescription,
-    setValidityPopupNewCardInputDescription,
-  ] = useState({
-    inputValue: "",
-    inputValidity: true,
-    errorMessage: false,
-  });
-  const [validityPopupUpdateAvatar, setValidityPopupUpdateAvatar] = useState({
-    inputValue: "",
-    inputValidity: true,
-    errorMessage: false,
-  });
-  const [isButtonActive, setIsButtonActive] = useState(false);
-  // валидация (avatar, new-card)
-  function handleFocus(setState) {
-    return (evt) => {
-      const input = evt.target;
-      setState({
-        inputValue: input.value,
-        inputValidity: false,
-        errorMessage: false,
-      });
-    };
-  }
-  function handleInputChange(setState) {
-    return (evt) => {
-      const input = evt.target;
-      setState({
-        inputValue: input.value,
-        inputValidity: input.validity.valid,
-        errorMessage: input.validationMessage,
-      });
-      setIsButtonActive(true);
-    };
-  }
-  // закрыть попап при нажатии на кнопку overlay
-  function handleOverlayClose(evt) {
-    const classList = evt.target.classList;
-    if (classList.contains("popup")) {
-      closeAllPopups();
-    }
-  }
-  // закрыть попап клавишей Esc
-  function handleEscClose(evt) {
-    if (evt.key === "Escape") {
-      closeAllPopups();
-    }
-  }
+  const [isRenderLoading, setIsRenderLoading] = useState(false);
   // открыть/закрыть попапы edit, new-card, avatar
   function handleEditPopupClick() {
     setIsEditPopupOpen(!isEditPopupOpen);
@@ -124,16 +47,15 @@ function App() {
     setSelectedCard({ isPopupImageOpen: true, link: link, heading: name });
   }
   // отправка попапа delete
-  function handlePopupDeleteSubmit(evt) {
-    evt.preventDefault();
+  function handlePopupDeleteSubmit(e) {
+    e.preventDefault();
     deleteOldCard(cardDelete);
   }
   // удалить карточку
   function handleCardDelete(card) {
     setIsDeletePopupOpen(!isDeletePopupOpen);
-    setIsButtonActive(true);
     if (isDeletePopupOpen) {
-      setRenderLoadingDelete("Удаление...");
+      setIsRenderLoading(true);
     }
     setcardDelete(card);
   }
@@ -144,42 +66,6 @@ function App() {
     setIsUpdateAvatarPopupOpen(false);
     setSelectedCard(false);
     setIsDeletePopupOpen(false);
-    // при закрытии попапа (edit) задать управляемым компонентам
-    // текущие данные профиля
-    setName(currentUser.name);
-    setDescription(currentUser.about);
-    // при закрытии попапа (avatar) очистить данные рефа
-    avatarRef.current.value = "";
-    // при закрытии попапа (new-card) очистить данные рефа
-    nameRef.current.value = "";
-    linkRef.current.value = "";
-    // очистка полей (валидация)
-    setValidityPopupEditInputName({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
-    });
-    setValidityPopupEditInputDescription({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
-    });
-    setValidityPopupNewCardInputName({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
-    });
-    setValidityPopupNewCardInputDescription({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
-    });
-    setValidityPopupUpdateAvatar({
-      inputValue: "",
-      inputValidity: true,
-      errorMessage: false,
-    });
-    setIsButtonActive(false);
   }
   // Взаимодействие с сервером
   // добавить информацию о пользователе с сервера
@@ -248,23 +134,24 @@ function App() {
   }
   // удалить карточку
   function deleteOldCard(card) {
+    setIsRenderLoading(true);
     api
       .deleteCard(card._id)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
+        setIsDeletePopupOpen(!isDeletePopupOpen);
       })
       .catch((error) => {
         // обработать ошибки
         console.log(`${error}. Запрос не выполнен!`); // вывести ошибку в консоль
       })
       .finally(() => {
-        setRenderLoadingDelete("Да");
-        setIsDeletePopupOpen(!isDeletePopupOpen);
+        setIsRenderLoading(false);
       });
   }
   // изменить собственную информацию (данные профиля) на сервере
   function handleUpdateUser({ name, about }) {
-    setRenderLoadingEdit("Сохранение...");
+    setIsRenderLoading(true);
     api
       .editProfileInfo(name, about)
       .then((info) => {
@@ -283,12 +170,12 @@ function App() {
         console.log(`${error}. Запрос не выполнен!`); // вывести ошибку в консоль
       })
       .finally(() => {
-        setRenderLoadingEdit("Сохранить");
+        setIsRenderLoading(false);
       });
   }
   // добавить новую карточку на сервер
   function handleAddNewCard({ name, link }) {
-    setRenderLoading("Создание...");
+    setIsRenderLoading(true);
     api
       .addCard(name, link)
       .then((newCard) => {
@@ -301,12 +188,12 @@ function App() {
         console.log(`${error}. Запрос не выполнен!`); // вывести ошибку в консоль
       })
       .finally(() => {
-        setRenderLoading("Создать");
+        setIsRenderLoading(false);
       });
   }
   // изменить собсвенную информацию (аватар пользователя)
   function handleUpdateAvatar({ avatar }) {
-    setRenderLoading("Создание...");
+    setIsRenderLoading(true);
     api
       .editProfileAvatar(avatar)
       .then((info) => {
@@ -325,17 +212,13 @@ function App() {
         console.log(`${error}. Запрос не выполнен!`); // вывести ошибку в консоль
       })
       .finally(() => {
-        setRenderLoading("Создать");
+        setIsRenderLoading(false);
       });
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div
-        className="page"
-        onClick={handleOverlayClose}
-        onKeyUp={handleEscClose}
-      >
+      <div className="page">
         <Header />
 
         <Main
@@ -352,60 +235,34 @@ function App() {
         <Footer />
 
         <EditProfilePopup
-          textButton={renderLoadingEdit}
+          textButton={isRenderLoading ? "Сохранение..." : "Сохранить"}
           isOpen={isEditPopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
-          name={name}
-          setName={setName}
-          description={description}
-          setDescription={setDescription}
-          validityName={validityPopupEditInputName}
-          setStateName={setValidityPopupEditInputName}
-          validityDescription={validityPopupEditInputDescription}
-          setStateDescription={setValidityPopupEditInputDescription}
-          isButtonActive={isButtonActive}
-          setIsButtonActive={setIsButtonActive}
         />
 
         <AddNewCardPopup
-          textButton={renderLoading}
+          textButton={isRenderLoading ? "Создание..." : "Создать"}
           isOpen={isNewCardPopupOpen}
           onClose={closeAllPopups}
           onAddNewCard={handleAddNewCard}
-          nameRef={nameRef}
-          linkRef={linkRef}
-          validityName={validityPopupNewCardInputName}
-          setStateName={setValidityPopupNewCardInputName}
-          validityDescription={validityPopupNewCardInputDescription}
-          setStateDescription={setValidityPopupNewCardInputDescription}
-          handleFocus={handleFocus}
-          handleInputChange={handleInputChange}
-          isButtonActive={isButtonActive}
         />
 
         <PopupWithForm
           name="delete"
           title="Вы уверены?"
-          textButton={renderLoadingDelete}
+          textButton={isRenderLoading ? "Удаление..." : "Да"}
           isOpen={isDeletePopupOpen}
           onClose={closeAllPopups}
           onSubmit={handlePopupDeleteSubmit}
-          inputValidity={[true]}
-          isButtonActive={isButtonActive}
+          isValid={true}
         />
 
         <EditAvatarPopup
-          textButton={renderLoading}
+          textButton={isRenderLoading ? "Создание..." : "Создать"}
           isOpen={isUpdateAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
-          avatarRef={avatarRef}
-          validity={validityPopupUpdateAvatar}
-          setState={setValidityPopupUpdateAvatar}
-          handleFocus={handleFocus}
-          handleInputChange={handleInputChange}
-          isButtonActive={isButtonActive}
         />
 
         <ImagePopup

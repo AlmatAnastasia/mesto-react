@@ -34,7 +34,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
             aria-label='Кнопка "Лайк"'
             className={cardLikeButtonClassName}
             onClick={handleLikeClick}
-          ></button>
+          />
           <label
             type="text"
             name="like-number"
@@ -51,7 +51,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
           aria-label='Кнопка "Удалить"'
           className="card__delete-button indicator"
           onClick={handleDeleteClick}
-        ></button>
+        />
       )}
     </li>
   );

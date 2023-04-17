@@ -1,55 +1,49 @@
 import { useContext, useEffect } from "react";
-import CurrentUserContext from "../contexts/CurrentUserContext";
 import PopupWithForm from "./PopupWithForm";
+import CurrentUserContext from "../contexts/CurrentUserContext";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
+import {
+  conditionForClassList,
+  inputNameText,
+  inputDescriptionText,
+} from "../utils/utils.js";
 export default function EditProfilePopup({
   textButton,
   isOpen,
   onClose,
   onUpdateUser,
-  // управляемые компоненты name, description
-  name,
-  setName,
-  description,
-  setDescription,
-  // валидация
-  validityName,
-  setStateName,
-  validityDescription,
-  setStateDescription,
-  isButtonActive,
-  setIsButtonActive,
 }) {
+  // данные текущего пользователя
   const currentUser = useContext(CurrentUserContext);
-  // подписаться на изменения данных пользователя
-  function handleChange(setState) {
-    return (evt) => {
-      const input = evt.target;
-      const classList = input.className;
-      classList.indexOf("popup__input_type_name-text") !== -1
-        ? setName(input.value)
-        : setDescription(input.value);
-      // валидация (edit)
-      setState({
-        inputValue: input.value,
-        inputValidity: input.validity.valid,
-        errorMessage: input.validationMessage,
-      });
-      setIsButtonActive(true);
-    };
-  }
-  function handleSubmit(evt) {
-    evt.preventDefault();
+  // валидация
+  const { values, handleChange, errors, isValid, setValues, resetForm } =
+    useFormAndValidation();
+  const inputName = values[inputNameText];
+  const inputDescription = values[inputDescriptionText];
+  const errorsInputName = errors[inputNameText];
+  const errorsInputDescription = errors[inputDescriptionText];
+  // наличие текста ошибки для каждого из полей
+  const conditionForClassListName = conditionForClassList(errorsInputName);
+  const conditionForClassListDescription = conditionForClassList(
+    errorsInputDescription
+  );
+  // добавление данных  текущего пользователя в поля при монтировании
+  useEffect(() => {
+    resetForm();
+    setValues({
+      [inputNameText]: currentUser.name,
+      [inputDescriptionText]: currentUser.about,
+    });
+  }, [resetForm, setValues, currentUser, isOpen]);
+  // обработка отправки формы
+  function handleSubmit(e) {
+    e.preventDefault();
     // передать значения управляемых компонентов во внешний обработчик
     onUpdateUser({
-      name: name,
-      about: description,
+      name: inputName,
+      about: inputDescription,
     });
   }
-  // использовать данные текущего пользователя в управляемых компонентах
-  useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
-  }, [currentUser, setName, setDescription]);
 
   return (
     <PopupWithForm
@@ -59,11 +53,7 @@ export default function EditProfilePopup({
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      inputValidity={[
-        validityName.inputValidity,
-        validityDescription.inputValidity,
-      ]}
-      isButtonActive={isButtonActive}
+      isValid={isValid}
     >
       <fieldset className="popup__info">
         <div className="popup__cell">
@@ -72,21 +62,21 @@ export default function EditProfilePopup({
             id="popup-edit-name-text"
             name="popup__input_type_name-text"
             className={`popup__input popup__input_type_name-text ${
-              !validityName.inputValidity && "popup__input_type_error"
+              conditionForClassListName && "popup__input_type_error"
             }`}
             placeholder="Имя"
             minLength="2"
             maxLength="40"
-            value={name}
-            onChange={handleChange(setStateName)}
+            value={inputName || ""}
+            onChange={handleChange}
             required
           />
           <span
             className={`popup-edit-name-text-error ${
-              !validityName.inputValidity && "popup__input-error"
+              conditionForClassListName && "popup__input-error"
             }`}
           >
-            {validityName.errorMessage}
+            {errorsInputName}
           </span>
         </div>
         <div className="popup__cell">
@@ -95,21 +85,21 @@ export default function EditProfilePopup({
             id="popup-edit-description-text"
             name="popup__input_type_description-text"
             className={`popup__input popup__input_type_description-text ${
-              !validityDescription.inputValidity && "popup__input_type_error"
+              conditionForClassListDescription && "popup__input_type_error"
             }`}
             placeholder="О себе"
             minLength="2"
             maxLength="200"
-            value={description}
-            onChange={handleChange(setStateDescription)}
+            value={inputDescription || ""}
+            onChange={handleChange}
             required
           />
           <span
             className={`popup-edit-description-text-error ${
-              !validityDescription.inputValidity && "popup__input-error"
+              conditionForClassListDescription && "popup__input-error"
             }`}
           >
-            {validityDescription.errorMessage}
+            {errorsInputDescription}
           </span>
         </div>
       </fieldset>

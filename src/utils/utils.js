@@ -5,3 +5,9 @@ export const dataApi = {
     "Content-Type": "application/json",
   },
 };
+
+export const conditionForClassList = (errors) =>
+  errors !== undefined && errors !== "";
+export const inputDescriptionUrl = "popup__input_type_description-url";
+export const inputNameText = "popup__input_type_name-text";
+export const inputDescriptionText = "popup__input_type_description-text";

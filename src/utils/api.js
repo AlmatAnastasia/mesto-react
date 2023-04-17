@@ -8,10 +8,9 @@ class Api {
     this._baseUrl = baseUrl; // адрес сервера и идентификатор группы
     this._authorization = headers.authorization; // личный токен
     this._type = headers["Content-Type"]; // 'Content-Type'
-    this._personalURL = "https://nomoreparties.co/v1/cohort-61/users/me";
-    this._personalAvatarURL =
-      "https://nomoreparties.co/v1/cohort-61/users/me/avatar";
-    this._cardsURL = "https://nomoreparties.co/v1/cohort-61/cards";
+    this._personalURL = `${baseUrl}/users/me`;
+    this._personalAvatarURL = `${baseUrl}/users/me/avatar`;
+    this._cardsURL = `${baseUrl}/cards`;
     this._personalID = null;
   }
 
@@ -54,99 +53,81 @@ class Api {
     };
   }
 
+  _request(url, options) {
+    // вернуть результат проверки запроса (обработать результаты)
+    return fetch(url, options).then(this._checkForErrors);
+  }
+
   // публичные методы
   getInitialCards() {
     // загрузить карточки с сервера
-    return fetch(this._cardsURL, this._returnHeadersGET()).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
-    });
+    return this._request(this._cardsURL, this._returnHeadersGET());
   }
 
   getProfileInfo() {
     // загрузить информацию о пользователе с сервера
-    return fetch(this._personalURL, this._returnHeadersGET()).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
-    });
+    return this._request(this._personalURL, this._returnHeadersGET());
   }
 
   editProfileInfo(name, about) {
     // редактировать профиль
-    return fetch(this._personalURL, {
+    return this._request(this._personalURL, {
       method: "PATCH",
       headers: this._returnHeadersData(),
       body: JSON.stringify({
         name: name,
         about: about,
       }),
-    }).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
     });
   }
 
   editProfileAvatar(avatar) {
     // редактировать аватар профиля
-    return fetch(this._personalAvatarURL, {
+    return this._request(this._personalAvatarURL, {
       method: "PATCH",
       headers: this._returnHeadersData(),
       body: JSON.stringify({
         avatar: avatar,
       }),
-    }).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
     });
   }
 
   addCard(name, link) {
     // добавить новую карточку
-    return fetch(this._cardsURL, {
+    return this._request(this._cardsURL, {
       method: "POST",
       headers: this._returnHeadersData(),
       body: JSON.stringify({
         name: name,
         link: link,
       }),
-    }).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
     });
   }
 
   deleteCard(id) {
     // удалить карточку
-    return fetch(`${this._cardsURL}/${id}`, this._returnHeadersDELETE()).then(
-      (res) => {
-        // обработать результаты
-        return this._checkForErrors(res);
-      }
+    return this._request(
+      `${this._cardsURL}/${id}`,
+      this._returnHeadersDELETE()
     );
   }
 
   updateAddStatusLike(id) {
     // лайкнуть карточку
-    return fetch(`${this._cardsURL}/${id}/likes`, {
+    return this._request(`${this._cardsURL}/${id}/likes`, {
       method: "PUT",
       headers: {
         authorization: this._authorization,
       },
-    }).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
     });
   }
 
   updateDeleteStatusLike(id) {
     // убрать лайк
-    return fetch(
+    return this._request(
       `${this._cardsURL}/${id}/likes`,
       this._returnHeadersDELETE()
-    ).then((res) => {
-      // обработать результаты
-      return this._checkForErrors(res);
-    });
+    );
   }
 }
 

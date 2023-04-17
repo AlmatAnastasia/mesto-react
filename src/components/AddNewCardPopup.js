@@ -1,29 +1,41 @@
+import { useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
+import {
+  conditionForClassList,
+  inputNameText,
+  inputDescriptionUrl,
+} from "../utils/utils.js";
 export default function AddNewCardPopup({
   textButton,
   isOpen,
   onClose,
   onAddNewCard,
-  // рефы nameRef, linkRef
-  nameRef,
-  linkRef,
-  // валидация
-  validityName,
-  setStateName,
-  validityDescription,
-  setStateDescription,
-  handleFocus,
-  handleInputChange,
-  isButtonActive,
 }) {
-  function handleSubmit(evt) {
-    evt.preventDefault();
+  // валидация
+  const { values, handleChange, errors, isValid, setValues, resetForm } =
+    useFormAndValidation();
+  const inputName = values[inputNameText];
+  const inputDescription = values[inputDescriptionUrl];
+  const errorsInputName = errors[inputNameText];
+  const errorsInputDescription = errors[inputDescriptionUrl];
+  // наличие текста ошибки для каждого из полей
+  const conditionForClassListName = conditionForClassList(errorsInputName);
+  const conditionForClassListDescription = conditionForClassList(
+    errorsInputDescription
+  );
+  // очистка полей при монтировании
+  useEffect(() => {
+    resetForm();
+    setValues({});
+  }, [resetForm, setValues, isOpen]);
+  // обработка отправки формы
+  function handleSubmit(e) {
+    e.preventDefault();
     onAddNewCard({
-      name: nameRef.current.value,
-      link: linkRef.current.value,
+      name: inputName,
+      link: inputDescription,
     });
-    nameRef.current.value = "";
-    linkRef.current.value = "";
   }
   return (
     <PopupWithForm
@@ -33,11 +45,7 @@ export default function AddNewCardPopup({
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      inputValidity={[
-        validityName.inputValidity,
-        validityDescription.inputValidity,
-      ]}
-      isButtonActive={isButtonActive}
+      isValid={isValid}
     >
       <fieldset className="popup__info">
         <div className="popup__cell">
@@ -46,22 +54,21 @@ export default function AddNewCardPopup({
             id="popup-new-card-name-text"
             name="popup__input_type_name-text"
             className={`popup__input popup__input_type_name-text ${
-              !validityName.inputValidity && "popup__input_type_error"
+              conditionForClassListName && "popup__input_type_error"
             }`}
             placeholder="Название"
             minLength="2"
             maxLength="30"
-            ref={nameRef}
-            onFocus={handleFocus(setStateName)}
-            onChange={handleInputChange(setStateName)}
+            value={inputName || ""}
+            onChange={handleChange}
             required
           />
           <span
             className={`popup-new-card-name-text-error ${
-              !validityName.inputValidity && "popup__input-error"
+              conditionForClassListName && "popup__input-error"
             }`}
           >
-            {validityName.errorMessage}
+            {errorsInputName}
           </span>
         </div>
         <div className="popup__cell">
@@ -70,20 +77,19 @@ export default function AddNewCardPopup({
             id="popup-new-card-description-url"
             name="popup__input_type_description-url"
             className={`popup__input popup__input_type_description-url ${
-              !validityDescription.inputValidity && "popup__input_type_error"
+              conditionForClassListDescription && "popup__input_type_error"
             }`}
             placeholder="Ссылка на картинку"
-            ref={linkRef}
-            onFocus={handleFocus(setStateDescription)}
-            onChange={handleInputChange(setStateDescription)}
+            value={inputDescription || ""}
+            onChange={handleChange}
             required
           />
           <span
             className={`popup-new-card-description-url-error ${
-              !validityDescription.inputValidity && "popup__input-error"
+              conditionForClassListDescription && "popup__input-error"
             }`}
           >
-            {validityDescription.errorMessage}
+            {errorsInputDescription}
           </span>
         </div>
       </fieldset>
